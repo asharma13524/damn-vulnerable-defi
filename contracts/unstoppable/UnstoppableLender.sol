@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "hardhat/console.sol";
 
 interface IReceiver {
     function receiveTokens(address tokenAddress, uint256 amount) external;
@@ -31,18 +32,23 @@ contract UnstoppableLender is ReentrancyGuard {
     }
 
     function flashLoan(uint256 borrowAmount) external nonReentrant {
+        // can't prevent this from failing
         require(borrowAmount > 0, "Must borrow at least one token");
 
         uint256 balanceBefore = damnValuableToken.balanceOf(address(this));
+        // when does this fail? can we get the balance of damnValuableToken under 10 erc20 tokens?
         require(balanceBefore >= borrowAmount, "Not enough tokens in pool");
 
         // Ensured by the protocol via the `depositTokens` function
+        // can we change the poolBalance while calling this function?
+        console.log(poolBalance);
+        console.log(balanceBefore);
         assert(poolBalance == balanceBefore);
-        
+
         damnValuableToken.transfer(msg.sender, borrowAmount);
-        
+
         IReceiver(msg.sender).receiveTokens(address(damnValuableToken), borrowAmount);
-        
+
         uint256 balanceAfter = damnValuableToken.balanceOf(address(this));
         require(balanceAfter >= balanceBefore, "Flash loan hasn't been paid back");
     }
